@@ -12,11 +12,12 @@ contract Enum {
 
 
 interface Executor {
-    // @notice Allows a Module to execute a transaction.
-    // @param to Destination address of module transaction.
-    // @param value Ether value of module transaction.
-    // @param data Data payload of module transaction.
-    // @param operation Operation type of module transaction.
+    /** @notice Allows a Module to execute a transaction.
+    *   @param to Destination address of module transaction.
+    *   @param value Ether value of module transaction.
+    *   @param data Data payload of module transaction.
+    *   @param operation Operation type of module transaction.
+    */
     function execTransactionFromModule(address to, uint256 value, bytes data, Enum.Operation operation)
         external
         returns (bool success);
@@ -29,7 +30,7 @@ contract GnosisSafeApp is AragonApp {
 
     /// State
     Executor public executor;
-
+    
     /// ACL
     bytes32 constant public EXECUTE_ROLE = keccak256("EXECUTE_ROLE");
     
