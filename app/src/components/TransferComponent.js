@@ -9,10 +9,14 @@ import {
   Text,  
   textStyle,
 } from '@aragon/ui'
-const Transfer = () => {
+var Web3 = require("web3")
+const Transfer = (props) => {
+  let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+  
   const { api } = useAragonApi()
   const [amtValue, setAmtValue] = useState('')
   const [toValue, setToValue] = useState('')
+    
   return (
     <Box
         css={`
@@ -43,11 +47,24 @@ const Transfer = () => {
 
        <Button
           label="Transfer"
-          onClick={() => api.execute(toValue, amtValue, 0, 0).toPromise()}
+          onClick={() => {
+            let wei = web3.utils.toWei(amtValue, 'ether')
+              if(web3.utils.isAddress(toValue)) {
+                api.transfer(toValue, wei)
+                   .toPromise()
+                   /*
+                   .catch(function(e) {
+                      alert(e)
+                   })
+                   */
+              } else {
+                props.invalidAddressOpened(true) 
+              }
+            }
+         }
        />
       </div> 
     </Box>
-
   );
 };
 

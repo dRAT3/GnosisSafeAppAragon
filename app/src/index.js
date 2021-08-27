@@ -8,7 +8,7 @@ import App from './App'
 
 const reducer = state => {
   if (state === null) {
-    return { count: 0, isSyncing: true }
+    return { executor: 0, isSyncing: true }
   }
   return state
 }

@@ -27,6 +27,9 @@ interface Executor {
 contract GnosisSafeApp is AragonApp {
     /// Events
     event Executed(address to, uint256 value, bytes data, Enum.Operation operation, bool succes);
+    event Transfer(address to, uint256 value, bool succes);
+
+
 
     /// State
     Executor public executor;
@@ -50,4 +53,10 @@ contract GnosisSafeApp is AragonApp {
         bool succes = executor.execTransactionFromModule(to, value, data, operation);
         emit Executed(to, value, data, operation, succes);
     }
+    function transfer(address to, uint256 value) auth(EXECUTE_ROLE) external  {
+        Enum.Operation operation = Enum.Operation.Call;
+        bool succes = executor.execTransactionFromModule(to, value, "0", operation);
+        emit Transfer(to, value, succes);
+    }
+
 }
