@@ -29,16 +29,15 @@ contract GnosisSafeApp is AragonApp {
     event Executed(address to, uint256 value, bytes data, Enum.Operation operation, bool succes);
     event Transfer(address to, uint256 value, bool succes);
 
-
-
     /// State
     Executor public executor;
-    
+    address public executor_address;
     /// ACL
     bytes32 constant public EXECUTE_ROLE = keccak256("EXECUTE_ROLE");
     
     function initialize(Executor _executor) public onlyInit {
         executor = _executor;
+        executor_address = address(_executor);
         initialized();
     }
 
@@ -47,12 +46,19 @@ contract GnosisSafeApp is AragonApp {
      * @param to Address to send to
      * @param value Amount to send
      * @param data Payload of transaction
-     * @param operation Call or delegatecall
+     * @param op Call or delegatecall
      */
-    function execute(address to, uint256 value, bytes data, Enum.Operation operation) auth(EXECUTE_ROLE) external  {
+    function execute(address to, uint256 value, bytes data, bool op) auth(EXECUTE_ROLE) external  {
+        Enum.Operation operation = Enum.Operation.Call;
+        if(op) {
+            operation = Enum.Operation.DelegateCall;
+        }
+
         bool succes = executor.execTransactionFromModule(to, value, data, operation);
         emit Executed(to, value, data, operation, succes);
     }
+
+
     function transfer(address to, uint256 value) auth(EXECUTE_ROLE) external  {
         Enum.Operation operation = Enum.Operation.Call;
         bool succes = executor.execTransactionFromModule(to, value, "0", operation);

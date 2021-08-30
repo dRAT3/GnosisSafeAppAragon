@@ -40,11 +40,11 @@ function initializeState() {
   return async cachedState => {
     return {
       ...cachedState,
-      count: await getExecutor(),
+      executor: await getExecutor(),
     }
   }
 }
 
 async function getExecutor() {
-  return await app.call('executor').toPromise()
+  return await app.call('executor_address').toPromise()
 }

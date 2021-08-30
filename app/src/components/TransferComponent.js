@@ -48,20 +48,19 @@ const Transfer = (props) => {
        <Button
           label="Transfer"
           onClick={() => {
-            let wei = web3.utils.toWei(amtValue, 'ether')
+            try {
+              let wei = web3.utils.toWei(amtValue, 'ether')
               if(web3.utils.isAddress(toValue)) {
-                api.transfer(toValue, wei)
-                   .toPromise()
-                   /*
-                   .catch(function(e) {
-                      alert(e)
-                   })
-                   */
+                api.transfer(toValue, wei).toPromise()
               } else {
-                props.invalidAddressOpened(true) 
+                props.sendMessage("Ethereum address invalid")
+                props.sidePanelOpened(true) 
               }
+            } catch (e) {
+              props.sendMessage("Amount has to be a valid number")
+              props.sidePanelOpened(true) 
             }
-         }
+          }}
        />
       </div> 
     </Box>

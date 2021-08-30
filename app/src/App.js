@@ -6,7 +6,9 @@ import {
   Main,
   SyncIndicator,
   Tabs,
-  SidePanel
+  SidePanel,
+  Info,
+  Button
 } from '@aragon/ui'
 
 import styled from 'styled-components'
@@ -18,8 +20,9 @@ function App() {
   const { api, appState, path, requestPath } = useAragonApi()
   const { executor, isSyncing } = appState
 
-  const [selected, setSelected] = useState([0])
+  const [selected, setSelected] = useState(0)
   const [opened, setOpened] = useState(false)
+  const [sidePanelMsg, setSidePanelMsg] = useState('')
 
   return (
     <Main>
@@ -33,11 +36,34 @@ function App() {
         selected={selected}
         onChange={setSelected}
       />
-      <Transfer invalidAddressOpened={openedProp => setOpened(openedProp)} />
+      {selected === 0 && <Transfer 
+        sendMessage={message => setSidePanelMsg(message)}  
+        sidePanelOpened={openedProp => setOpened(openedProp)} 
+      />}
 
-    <SidePanel title="Invalid Address" opened={opened}>
-      Address has to be a valid addres
-    </SidePanel>
+      {selected === 1 && <Call 
+        sendMessage={message => setSidePanelMsg(message)}  
+        sidePanelOpened={openedProp => setOpened(openedProp)} 
+      />}
+
+      {selected === 2 && <Transactions 
+        sendMessage={message => setSidePanelMsg(message)}  
+        sidePanelOpened={openedProp => setOpened(openedProp)} 
+      />}
+
+      <SidePanel 
+        title="Create transaction" 
+        opened={opened} 
+        onClose={() => setOpened(false)}
+      >
+        <Info title="Action impossible" mode="error">
+          {sidePanelMsg}
+        </Info>
+
+      <Button mode="strong" onClick={() => setOpened(false)}>
+        Close
+      </Button>
+      </SidePanel>
 
     </Main>
   )
